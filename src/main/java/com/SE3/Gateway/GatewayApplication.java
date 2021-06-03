@@ -19,8 +19,13 @@ public class GatewayApplication {
 		return "{\"_links\": {\"self\": \"/api\",\"schedule\": \"/api/schedule\"}}";
 	}
 	@GetMapping("/api/schedule")
-	public String schedule(@RequestParam(value = "nap") boolean nap, @RequestParam(value = "age") String age) {
-		String url = String.format("http://localhost:8081/api/schedule?nap=%s&age=%s",""+nap,age);
+	public String schedule(	@RequestParam(value = "nap") boolean nap, 
+							@RequestParam(value = "age") int age,
+							@RequestParam(value = "breakfast") boolean breakfast, 
+							@RequestParam(value = "wakeUpTime") String wakeUpTime,
+							@RequestParam(value = "getReadyDuration") String getReadyDuration,
+							@RequestParam(value = "workingHours") String workingHours) {
+		String url = String.format("http://localhost:8081/api/schedule?nap=%s&age=%s&breakfast=%s&wakeUpTime=%s&getReadyDuration=%s&workingHours=%s",""+nap,""+age,""+breakfast,wakeUpTime, getReadyDuration, workingHours);
 		return HTTPClient.getRequest(url);
 	}
 }
