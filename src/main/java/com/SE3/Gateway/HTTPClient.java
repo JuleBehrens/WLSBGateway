@@ -5,7 +5,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * service class for HTTP-Requests
+ */
 public class HTTPClient {
+
+    /**
+     * Sends a GET-Request via HTTP to a given URL and returns the answer
+     * Uses the HttpURLConnection class
+     * @param url URL as String
+     * @return HTTP answer as String or if an Error accurs Exception message
+     */
     public static String getRequest(String url) {
         try {
             URL url1 = new URL(url);//your url i.e fetch data from .
