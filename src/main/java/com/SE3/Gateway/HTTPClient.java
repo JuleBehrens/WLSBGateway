@@ -38,7 +38,7 @@ public class HTTPClient {
             conn.disconnect();
             return response;
         } catch (Exception e) {
-            return "Exception in NetClientGet: "+e.toString();
+            return "Exception in HTTPClient class: "+e.toString();
         }
     }
 }

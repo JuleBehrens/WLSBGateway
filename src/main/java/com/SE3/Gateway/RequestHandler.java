@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.minidev.json.JSONObject;
-
 /**
 * Class to handle API Request and redirect them to specific API
 */
