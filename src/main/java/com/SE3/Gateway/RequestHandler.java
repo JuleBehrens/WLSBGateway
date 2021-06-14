@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.minidev.json.JSONObject;
+
 /**
 * Class to handle API Request and redirect them to specific API
 */
@@ -57,6 +59,19 @@ public class RequestHandler {
 							@RequestParam(value = "timesteps") String timeSteps,
 							@RequestParam(value = "timezone") String timeZone) {
 		String url = String.format("https://api.tomorrow.io/v4/timelines?apikey=dIdeyiuMKXGdmuPO5nOfrwmh3d1BFLbo&location=%s&fields=temperature,temperatureApparent,weatherCode,precipitationIntensity,precipitationType,windSpeed&startTime=%s&endTime=%s&timesteps=%s&timezone=%s", location, startTime, endTime, timeSteps, timeZone);
+		return HTTPClient.getRequest(url);
+	}
+
+	/**
+	 * Handles Get-Requests for random recipes (dependent on tags)
+	 * @param number number of recipes returned
+	 * @param tags can be diets, meal types, cuisines, or intolerances (Example: 'vegetarian, dessert', more information about tags: https://spoonacular.com/food-api/docs#Diets, https://spoonacular.com/food-api/docs#Meal-Types, https://spoonacular.com/food-api/docs#Cuisines, https://spoonacular.com/food-api/docs#Intolerances)
+	 * @return Answer in JSON with random recipes from https://spoonacular.com/food-api
+	 */
+	@GetMapping("/api/recipes")
+	public String recipes(	@RequestParam(value = "number") int number,
+							@RequestParam(value = "tags") String tags) {
+		String url = String.format("https://api.spoonacular.com/recipes/random?apiKey=1c4404267111445c87d3e689ee099317&number=%s&tags=%s", number, tags);
 		return HTTPClient.getRequest(url);
 	}
 }
