@@ -12,9 +12,9 @@ public class HTTPClient {
 
     /**
      * Sends a GET-Request via HTTP to a given URL and returns the answer
-     * <p>
+     * <br>
      * Expects a JSON-Answer
-     * <p>
+     * <br>
      * Uses the HttpURLConnection class
      * @param url URL as String
      * @return HTTP answer as String or if an Error accurs Exception message
