@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
 /**
  * service class for HTTP-Requests
  */
@@ -24,13 +25,18 @@ public class HTTPClient {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
-            if (conn.getResponseCode() != 200) {
+            if (conn.getResponseCode() != 200) { 
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                String output;
+                String response = "";
+                while ((output = br.readLine()) != null) {
+                    response += output;
+                }
                 throw new RuntimeException("Failed : HTTP Error code : "
-                        + conn.getResponseCode());
+                        + conn.getResponseCode() + "; Message: "+ conn.getResponseMessage() + "; " + response);
             }
-            InputStreamReader in = new InputStreamReader(conn.getInputStream());
-            BufferedReader br = new BufferedReader(in);
-            String output;
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String output = br.toString();
             String response = "";
             while ((output = br.readLine()) != null) {
                 response += output;

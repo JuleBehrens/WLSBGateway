@@ -38,6 +38,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.listennotes</groupId>
+			<artifactId>podcast-api</artifactId>
+			<version>1.0.6</version>
+		  </dependency>
 	</dependencies>
 
 	<build>

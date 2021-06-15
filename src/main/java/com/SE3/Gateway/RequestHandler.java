@@ -3,19 +3,41 @@ package com.SE3.Gateway;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.HashMap;
+import com.listennotes.podcast_api.ApiResponse;
+import com.listennotes.podcast_api.Client;
+import com.listennotes.podcast_api.exception.ListenApiException;
+
+
 
 /**
 * Class to handle API Request and redirect them to specific API
 */
 @RestController
 public class RequestHandler {
+
+
+	private final String scheduleAPIURL = "http://localhost:8081/api/schedule?nap=%s&age=%s&breakfast=%s&wakeUpTime=%s&getReadyDuration=%s&workingHours=%s";
+
+	private final String weatherAPIkey = "dIdeyiuMKXGdmuPO5nOfrwmh3d1BFLbo";
+	private final String weatherAPIURL = "https://api.tomorrow.io/v4/timelines?apikey=%s&location=%s&fields=%s&startTime=%s&endTime=%s&timesteps=%s&timezone=%s";
+	private final String weatherAPIfields = "temperature,temperatureApparent,weatherCode,precipitationIntensity,precipitationType,windSpeed";
+
+	private final String recipesAPIkey = "1c4404267111445c87d3e689ee099317";
+	private final String recipesAPIURL = "https://api.spoonacular.com/recipes/random?apiKey=%s&number=%s&tags=%s";
+
+	private final String meditationAPIkey = "";
+	private final String meditationAPISearchFields = "title,description";
+
+	private final String links = "{\"_links\": {\"self\": \"/api\",\"schedule\": \"/api/schedule\",\"weather\": \"/api/weather\",\"recipes\": \"/api/recipes\",\"meditation\": \"/api/meditation\"}}";
+
 	/**
 	 * Entry Point to API
 	 * @return possible links to navigate to the functions of the APIs behind the Gateway
 	 */
     @GetMapping("/api")
 	public String api() {
-		return "{\"_links\": {\"self\": \"/api\",\"schedule\": \"/api/schedule\"}}";
+		return links;
 	}
 
 	/**
@@ -37,7 +59,7 @@ public class RequestHandler {
 							@RequestParam(value = "wakeUpTime") String wakeUpTime,
 							@RequestParam(value = "getReadyDuration") String getReadyDuration,
 							@RequestParam(value = "workingHours") String workingHours) {
-		String url = String.format("http://localhost:8081/api/schedule?nap=%s&age=%s&breakfast=%s&wakeUpTime=%s&getReadyDuration=%s&workingHours=%s",""+nap,""+age,""+breakfast,wakeUpTime, getReadyDuration, workingHours);
+		String url = String.format(scheduleAPIURL,""+nap,""+age,""+breakfast,wakeUpTime, getReadyDuration, workingHours);
 		return HTTPClient.getRequest(url);
 	}
 
@@ -56,7 +78,7 @@ public class RequestHandler {
 							@RequestParam(value = "endTime") String endTime,
 							@RequestParam(value = "timesteps") String timeSteps,
 							@RequestParam(value = "timezone") String timeZone) {
-		String url = String.format("https://api.tomorrow.io/v4/timelines?apikey=dIdeyiuMKXGdmuPO5nOfrwmh3d1BFLbo&location=%s&fields=temperature,temperatureApparent,weatherCode,precipitationIntensity,precipitationType,windSpeed&startTime=%s&endTime=%s&timesteps=%s&timezone=%s", location, startTime, endTime, timeSteps, timeZone);
+		String url = String.format(weatherAPIURL, weatherAPIkey, location, weatherAPIfields, startTime, endTime, timeSteps, timeZone);
 		return HTTPClient.getRequest(url);
 	}
 
@@ -69,7 +91,30 @@ public class RequestHandler {
 	@GetMapping("/api/recipes")
 	public String recipes(	@RequestParam(value = "number") int number,
 							@RequestParam(value = "tags") String tags) {
-		String url = String.format("https://api.spoonacular.com/recipes/random?apiKey=1c4404267111445c87d3e689ee099317&number=%s&tags=%s", number, tags);
+		String url = String.format(recipesAPIURL, recipesAPIkey, number, tags);
 		return HTTPClient.getRequest(url);
+	}
+
+	/**
+	 * Handles Get-Requests for Podcasts via https://www.listennotes.com/api/docs/
+	 * @param search search Parameters for Podcastsearch (Example: 'Schlaf Meditation')
+	 * @param language Language in which Podcasts should be (Example: 'German')
+	 * @return JSON-Objects with podcast data
+	 */
+	@GetMapping("/api/meditation")
+	public String meditation(	@RequestParam(value = "search") String search,
+								@RequestParam(value = "language") String language){
+		
+		try {
+			Client objClient = new Client(meditationAPIkey);
+			HashMap<String, String> parameters = new HashMap<>();
+			parameters.put("q", search);
+      		parameters.put("only_in", meditationAPISearchFields);
+      		parameters.put("language", language);
+			ApiResponse response = objClient.search(parameters);
+			return response.toJSON().toString(2);
+		  } catch (ListenApiException e) {
+			  return e.getMessage();
+		  }
 	}
 }
