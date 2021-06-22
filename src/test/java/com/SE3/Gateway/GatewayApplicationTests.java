@@ -55,7 +55,32 @@ public class GatewayApplicationTests {
 		assertThat(answerString).withFailMessage("Data cannot be retrieved: Ensure that WLSBApplication is started on port 8080").contains("status", "\"1\"", "schedule");
 	}
 
+	@ParameterizedTest
+	@ValueSource(strings = {"?number=1&tags=vegetarian,dessert",
+							"?number=5&tags=pescetarian,snack,fingerfood",
+							"?number=1&tags=vegan,spanish",
+							"?number=1&tags=gluten-free,soup,african",
+							"?number=1&tags=dessert,carribean",
+							"?number=1&tags=main-course,vienamese"}) // x numbers; keine verschiedenen cuisines und keine verschiedenen meal-types
+	public void getRecipe(String params) {
+		String url = localhost + port + "/api/recipes" + params;
+		String answerString = this.restTemplate.getForObject(url, String.class);
+		assertThat(answerString).contains("recipes");
+	}
+	@ParameterizedTest
+	@ValueSource(strings = {"?location=49.01079,8.40865&startTime=2021-06-14T19:09:50Z&endTime=2021-06-15T10:09:50Z&timesteps=1h&timezone=Europe/Berlin",
+							"?location=53.5872222,9.89861111111111&startTime=2021-06-22T19:09:50Z&endTime=2021-06-23T10:09:50Z&timesteps=1h&timezone=Europe/Berlin",
+							"?location=52.9984971,9.3806941&startTime=2021-06-30T10:00:00Z&endTime=2021-07-1T10:00:00Z&timesteps=2&timezone=Europe/Berlin",
+							"?location=21.304547,-157.855676&startTime=2021-09-22T00:00:00Z&endTime=2021-09-30T00:00:00Z&timesteps=10&timezone=Pacific/Honolulu",
+							"??location=55.7504461,37.6174943&startTime=2021-07-01T12:34:56Z&endTime=2021-07-02T12:34:56Z&timesteps=2&timezone=Europe/Moscow",
+							"?location=-45.0321923,168.661&startTime=2021-07-10T12:00:00Z&endTime=2021-07-20T12:00:00Z&timesteps=24&timezone=Pacific/Auckland"}) // 5 numbers
+	public void getWeather(String params) {
+		String url = localhost + port + "/api/weather" + params;
+		String answerString = this.restTemplate.getForObject(url, String.class);
+		assertThat(answerString).contains("recipes");
+	}
 	/**
-	 * ToDo: Test Methoden für Meditation, Wetter, Rezepte
+	 * ToDo: Test Methoden für Meditation,
 	 */
+		
 }
