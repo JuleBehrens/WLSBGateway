@@ -52,7 +52,7 @@ public class GatewayApplicationTests {
 	public void getSchedule(String params) {
 		String url = localhost + port + "/api/schedule" + params;
 		String answerString = this.restTemplate.getForObject(url, String.class);
-		assertThat(answerString).contains("status", "\"1\"", "schedule");
+		assertThat(answerString).withFailMessage("Data cannot be retrieved: Ensure that WLSBApplication is started on port 8080").contains("status", "\"1\"", "schedule");
 	}
 
 	/**
