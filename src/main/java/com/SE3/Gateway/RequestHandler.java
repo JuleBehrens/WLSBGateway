@@ -1,5 +1,6 @@
 package com.SE3.Gateway;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,19 +18,28 @@ import com.listennotes.podcast_api.exception.ListenApiException;
 public class RequestHandler {
 
 
-	private final String scheduleAPIURL = "http://localhost:8081/api/schedule?nap=%s&age=%s&breakfast=%s&wakeUpTime=%s&getReadyDuration=%s&workingHours=%s";
+	@Value("${api.schedule.url}")
+	private String scheduleAPIURL;
 
-	private final String weatherAPIkey = "dIdeyiuMKXGdmuPO5nOfrwmh3d1BFLbo";
-	private final String weatherAPIURL = "https://api.tomorrow.io/v4/timelines?apikey=%s&location=%s&fields=%s&startTime=%s&endTime=%s&timesteps=%s&timezone=%s";
-	private final String weatherAPIfields = "temperature,temperatureApparent,weatherCode,precipitationIntensity,precipitationType,windSpeed";
+	@Value("${api.weather.key}")
+	private String weatherAPIkey;
+	@Value("${api.weather.url}")
+	private String weatherAPIURL;
+	@Value("${api.weather.fields}")
+	private String weatherAPIfields;
 
-	private final String recipesAPIkey = "1c4404267111445c87d3e689ee099317";
-	private final String recipesAPIURL = "https://api.spoonacular.com/recipes/random?apiKey=%s&number=%s&tags=%s";
+	@Value("${api.recipes.key}")
+	private String recipesAPIkey;
+	@Value("${api.recipes.url}")
+	private String recipesAPIURL;
 
-	private final String meditationAPIkey = "";
-	private final String meditationAPISearchFields = "title,description";
+	@Value("${api.meditation.key}")
+	private String meditationAPIkey;
+	@Value("${api.meditation.fields}")
+	private String meditationAPISearchFields;
 
-	private final String links = "{\"_links\": {\"self\": \"/api\",\"schedule\": \"/api/schedule\",\"weather\": \"/api/weather\",\"recipes\": \"/api/recipes\",\"meditation\": \"/api/meditation\"}}";
+	@Value("${api.self.links}")
+	private String links;
 
 	/**
 	 * Entry Point to API
@@ -104,7 +114,6 @@ public class RequestHandler {
 	@GetMapping("/api/meditation")
 	public String meditation(	@RequestParam(value = "search") String search,
 								@RequestParam(value = "language") String language){
-		
 		try {
 			Client objClient = new Client(meditationAPIkey);
 			HashMap<String, String> parameters = new HashMap<>();
